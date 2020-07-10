@@ -1,0 +1,37 @@
+img {
+  opacity: 0.9;
+  justify-content: center;
+  align-content: center;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.album-info {
+  background-color: transparent;
+  border-radius: 6px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  text-align: left;
+  color: #fff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+h3 {
+  color: #eebd29;
+  font-weight: bold;
+}
+h4,
+h5 {
+  color: #eee469;
+}
+
+h3,
+h4,
+h5 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
