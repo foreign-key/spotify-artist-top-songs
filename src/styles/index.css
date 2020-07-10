@@ -52,12 +52,16 @@ body {
   overflow-y: auto;
 }
 .albumMain {
-  margin-top: -50vh;
+  margin-top: -75vh;
+  margin-bottom: 20px;
+}
+.spotifyMain {
+  margin-top: -75vh;
   height: 100%;
   height: 100vh;
 }
 .authorise {
-  margin-top: 50vh;
+  margin-top: 75vh;
 }
 .authorise .btn {
   border-radius: 20px;
@@ -65,4 +69,7 @@ body {
   background-color: #1db954;
   color: #000000;
   border-color: #4e4b05;
+}
+h2 {
+  color: #eee469;
 }

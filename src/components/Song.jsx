@@ -28,7 +28,7 @@ class Song extends Component {
       );
     }
 
-    return <div>{songs}</div>;
+    return <React.Fragment>{songs}</React.Fragment>;
   }
 }
 

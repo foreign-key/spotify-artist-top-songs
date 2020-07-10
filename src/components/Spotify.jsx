@@ -7,6 +7,7 @@ import Authorise from "./Authorise";
 import SearchInput from "./SearchInput";
 import Song from "./Song";
 import AlbumInfo from "./AlbumInfo";
+import Loading from "./Loading";
 
 import "../styles/index.css";
 
@@ -19,6 +20,8 @@ class Spotify extends Component {
       token: "",
       tracks: [],
       album: "",
+      requesting: false,
+      done: false,
     };
 
     this.searchHandler = this.searchHandler.bind(this);
@@ -34,6 +37,10 @@ class Spotify extends Component {
         true
       );
       xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
+      this.setState({
+        requesting: true,
+      });
+
       xhr.onload = function (e) {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
@@ -45,6 +52,8 @@ class Spotify extends Component {
           } else {
             this.setState({
               errorMessage: xhr.statusText,
+              requesting: false,
+              done: true,
             });
             console.error(xhr.statusText);
           }
@@ -54,6 +63,10 @@ class Spotify extends Component {
         console.error(xhr.statusText);
       };
       xhr.send(null);
+      this.setState({
+        requesting: false,
+        done: true,
+      });
     }
 
     inputElement.focus();
@@ -70,6 +83,10 @@ class Spotify extends Component {
         true
       );
       xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
+      this.setState({
+        requesting: true,
+      });
+
       xhr.onload = function (e) {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
@@ -78,10 +95,14 @@ class Spotify extends Component {
               artist: response.tracks[0].album.artists[0].name,
               tracks: response.tracks,
               album: response.tracks[0],
+              done: true,
+              requesting: false,
             });
           } else {
             this.setState({
               errorMessage: xhr.statusText,
+              requesting: false,
+              done: true,
             });
             console.error(xhr.statusText);
           }
@@ -105,45 +126,55 @@ class Spotify extends Component {
   render() {
     return (
       <Container>
-        <div>
-          <Row>
-            <Col xs={1} s={2} md={3} lg={4} />
-            <Col xs={10} s={8} md={6} lg={4}>
-              <Authorise onTokenGenerated={this.onTokenGenerated} />
-            </Col>
-            <Col xs={1} s={2} md={3} lg={4} />
-          </Row>
+        <Row>
+          <Col xs={1} s={2} md={3} lg={4} />
+          <Col xs={10} s={8} md={6} lg={4}>
+            <Authorise onTokenGenerated={this.onTokenGenerated} />
+          </Col>
+          <Col xs={1} s={2} md={3} lg={4} />
+        </Row>
 
-          {this.state.token && (
-            <div className="albumMain">
+        {this.state.token && (
+          <div className="albumMain">
+            <Row>
+              <Col />
+              <Col
+                xs={{ span: 8 }}
+                md={{ span: 6 }}
+                lg={{ span: 4 }}
+                xl={{ span: 4 }}
+              >
+                <SearchInput searchHandler={this.searchHandler} />
+              </Col>
+              <Col />
+            </Row>
+            {this.state.tracks && (
               <Row>
-                <Col />
-                <Col
-                  xs={{ span: 8 }}
-                  md={{ span: 6 }}
-                  lg={{ span: 4 }}
-                  xl={{ span: 4 }}
-                >
-                  <SearchInput searchHandler={this.searchHandler} />
-                </Col>
-                <Col />
+                {this.state.requesting ? (
+                  <React.Fragment>
+                    <Col xs={1} s={2} md={2} lg={3} />
+                    <Col xs={10} s={8} md={8} lg={6}>
+                      <Loading {...this.state} />
+                    </Col>
+                    <Col xs={1} s={2} md={2} lg={3} />
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <Col md={6}>
+                      <AlbumInfo info={this.state.album} />
+                    </Col>
+                    <Col md={{ span: 5, offset: 1 }}>
+                      <Song
+                        songChangeHandler={this.songChangeHandler}
+                        artistTracks={this.state.tracks}
+                      />
+                    </Col>
+                  </React.Fragment>
+                )}
               </Row>
-              {this.state.tracks && (
-                <Row>
-                  <Col md={6}>
-                    <AlbumInfo info={this.state.album} />
-                  </Col>
-                  <Col md={{ span: 5, offset: 1 }}>
-                    <Song
-                      songChangeHandler={this.songChangeHandler}
-                      artistTracks={this.state.tracks}
-                    />
-                  </Col>
-                </Row>
-              )}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </Container>
     );
   }

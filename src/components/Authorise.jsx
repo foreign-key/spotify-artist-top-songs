@@ -3,7 +3,6 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 
 import runtimeEnv from "@mars/heroku-js-runtime-env";
-import * as $ from "jquery";
 
 const env = runtimeEnv();
 
@@ -27,48 +26,16 @@ const hash = window.location.hash
 window.location.hash = "";
 
 class Authorise extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       token: null,
-      item: {
-        album: {
-          images: [{ url: "" }],
-        },
-        name: "",
-        artists: [{ name: "" }],
-        duration_ms: 0,
-      },
-      is_playing: "Paused",
-      progress_ms: 0,
     };
-
-    this.getCurrentlyPlaying = this.getCurrentlyPlaying.bind(this);
-  }
-
-  getCurrentlyPlaying(token) {
-    // Make a call using the token
-    $.ajax({
-      url: "https://api.spotify.com/v1/me/player",
-      type: "GET",
-      beforeSend: (xhr) => {
-        xhr.setRequestHeader("Authorization", "Bearer " + token);
-      },
-      success: (data) => {
-        this.setState({
-          item: data.item,
-          is_playing: data.is_playing,
-          progress_ms: data.progress_ms,
-        });
-      },
-    });
   }
 
   componentDidMount() {
-    // Set token
     let _token = hash.access_token;
     if (_token) {
-      // Set token
       this.setState(
         {
           token: _token,
