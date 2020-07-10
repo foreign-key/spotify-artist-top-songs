@@ -1,5 +1,5 @@
 # Artist's Top Tracks | Spotify
-A simple app created using React.JS that lists the top songs from a particular artist. The app displays the album cover and some info upon clicking on the song(card). This utilizes Spotify's APIs to search of artist ID, albums, and songs.
+A simple app created using React.JS that lists the top songs from a particular artist. The app displays the album cover and some info upon clicking on the song(card). This utilizes Spotify's APIs to search for artist ID, albums, and songs.
 
 ## Live Demo
 [Artist's Top Tracks | Spotify](http://fk-toptracks.herokuapp.com/) on Heroku
