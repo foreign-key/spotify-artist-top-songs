@@ -23,6 +23,7 @@ class Spotify extends Component {
       album: "",
       requesting: false,
       done: false,
+      docTitle: "",
     };
 
     this.searchHandler = this.searchHandler.bind(this);
@@ -136,9 +137,10 @@ class Spotify extends Component {
     this.setState({
       artist: artistName,
       artistId: artistId,
+      docTitle: `Top 10 Tracks of ${artistName}`,
     });
 
-    document.title = `${this.state.artist}'s Top Tracks | Spotify`;
+    document.title = `${this.state.docTitle} | Spotify`;
   };
 
   songChangeHandler = (cardElement, album) => {
@@ -190,7 +192,7 @@ class Spotify extends Component {
                       {this.state.artist && (
                         <div className="album-header">
                           <Col xs>
-                            <h1>{this.state.artist}'s Top Tracks</h1>
+                            <h1>{this.state.docTitle}</h1>
                           </Col>
                         </div>
                       )}
