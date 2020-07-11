@@ -35,3 +35,12 @@ h5 {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.album-header {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+h1 {
+  color: #d3b906;
+  font-weight: bold;
+}

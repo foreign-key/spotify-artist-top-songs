@@ -28,7 +28,7 @@ class AlbumInfo extends Component {
               </div>
             </Col>
           </Row>
-        )}{" "}
+        )}
       </React.Fragment>
     );
   }

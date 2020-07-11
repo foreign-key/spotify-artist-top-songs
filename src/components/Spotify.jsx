@@ -17,6 +17,7 @@ class Spotify extends Component {
 
     this.state = {
       artist: "",
+      artistId: "",
       token: "",
       tracks: [],
       album: "",
@@ -29,7 +30,9 @@ class Spotify extends Component {
   }
 
   searchHandler = (event, inputElement) => {
-    if (inputElement.value !== "") {
+    const searchArtist = inputElement.value;
+
+    if (searchArtist !== "") {
       var xhr = new XMLHttpRequest();
       xhr.open(
         "GET",
@@ -46,8 +49,8 @@ class Spotify extends Component {
           if (xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
             if (response.artists.items.length > 0) {
-              this.searchAlbums(response.artists.items[0].id);
-              document.title = `${response.artists.items[0].name}'s Top Tracks | Spotify`;
+              this.getArtistName(searchArtist, response.artists.items);
+              this.searchAlbums();
             }
           } else {
             this.setState({
@@ -74,12 +77,12 @@ class Spotify extends Component {
     event.preventDefault();
   };
 
-  searchAlbums = (artistId) => {
-    if (artistId !== "") {
+  searchAlbums = () => {
+    if (this.state.artistId !== "") {
       var xhr = new XMLHttpRequest();
       xhr.open(
         "GET",
-        `https://api.spotify.com/v1/artists/${artistId}/top-tracks?country=US`,
+        `https://api.spotify.com/v1/artists/${this.state.artistId}/top-tracks?country=US`,
         true
       );
       xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
@@ -92,7 +95,6 @@ class Spotify extends Component {
           if (xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
             this.setState({
-              artist: response.tracks[0].album.artists[0].name,
               tracks: response.tracks,
               album: response.tracks[0],
               done: true,
@@ -113,6 +115,32 @@ class Spotify extends Component {
       };
       xhr.send(null);
     }
+  };
+
+  getArtistName = (searchArtist, items) => {
+    const filteredItems = items.filter(
+      (x) => x.name.toLowerCase() === searchArtist
+    );
+
+    let artistName = "",
+      artistId = "";
+
+    if (filteredItems.length > 0) {
+      artistName = filteredItems[0].name;
+      artistId = filteredItems[0].id;
+    }
+
+    if (items.length > 0) {
+      artistName = items[0].name;
+      artistId = items[0].id;
+    }
+
+    this.setState({
+      artist: artistName,
+      artistId: artistId,
+    });
+
+    document.title = `${this.state.artist}'s Top Tracks | Spotify`;
   };
 
   songChangeHandler = (cardElement, album) => {
@@ -160,15 +188,26 @@ class Spotify extends Component {
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
-                    <Col md={6}>
-                      <AlbumInfo info={this.state.album} />
-                    </Col>
-                    <Col md={{ span: 5, offset: 1 }}>
-                      <Song
-                        songChangeHandler={this.songChangeHandler}
-                        artistTracks={this.state.tracks}
-                      />
-                    </Col>
+                    <Row>
+                      {this.state.artist && (
+                        <div className="album-header">
+                          <Col xs>
+                            <h1>{this.state.artist}'s Top Tracks</h1>
+                          </Col>
+                        </div>
+                      )}
+                    </Row>
+                    <Row>
+                      <Col md={6}>
+                        <AlbumInfo info={this.state.album} />
+                      </Col>
+                      <Col md={{ span: 5, offset: 1 }}>
+                        <Song
+                          songChangeHandler={this.songChangeHandler}
+                          artistTracks={this.state.tracks}
+                        />
+                      </Col>
+                    </Row>
                   </React.Fragment>
                 )}
               </Row>

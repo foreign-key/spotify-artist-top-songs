@@ -20,7 +20,7 @@ class Song extends Component {
                 ref={(card) => (this._cardElement = card)}
                 body
               >
-                {info.name}
+                {index + 1} - {info.name}
               </Card>
             );
           })}
