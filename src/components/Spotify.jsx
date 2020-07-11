@@ -8,6 +8,7 @@ import SearchInput from "./SearchInput";
 import Song from "./Song";
 import AlbumInfo from "./AlbumInfo";
 import Loading from "./Loading";
+import Footer from "./Footer";
 
 import "../styles/index.css";
 
@@ -153,68 +154,71 @@ class Spotify extends Component {
 
   render() {
     return (
-      <Container>
-        <Row>
-          <Col xs={1} s={2} md={3} lg={4} />
-          <Col xs={10} s={8} md={6} lg={4}>
-            <Authorise onTokenGenerated={this.onTokenGenerated} />
-          </Col>
-          <Col xs={1} s={2} md={3} lg={4} />
-        </Row>
+      <React.Fragment>
+        <Container>
+          <Row>
+            <Col xs={1} s={2} md={3} lg={4} />
+            <Col xs={10} s={8} md={6} lg={4}>
+              <Authorise onTokenGenerated={this.onTokenGenerated} />
+            </Col>
+            <Col xs={1} s={2} md={3} lg={4} />
+          </Row>
 
-        {this.state.token && (
-          <div className="albumMain">
-            <Row>
-              <Col />
-              <Col
-                xs={{ span: 8 }}
-                md={{ span: 6 }}
-                lg={{ span: 4 }}
-                xl={{ span: 4 }}
-              >
-                <SearchInput searchHandler={this.searchHandler} />
-              </Col>
-              <Col />
-            </Row>
-            {this.state.tracks && (
-              <React.Fragment>
-                {this.state.requesting ? (
-                  <Row>
-                    <Col xs={1} s={2} md={2} lg={3} />
-                    <Col xs={10} s={8} md={8} lg={6}>
-                      <Loading {...this.state} />
-                    </Col>
-                    <Col xs={1} s={2} md={2} lg={3} />
-                  </Row>
-                ) : (
-                  <React.Fragment>
+          {this.state.token && (
+            <div className="albumMain">
+              <Row>
+                <Col />
+                <Col
+                  xs={{ span: 8 }}
+                  md={{ span: 6 }}
+                  lg={{ span: 4 }}
+                  xl={{ span: 4 }}
+                >
+                  <SearchInput searchHandler={this.searchHandler} />
+                </Col>
+                <Col />
+              </Row>
+              {this.state.tracks && (
+                <React.Fragment>
+                  {this.state.requesting ? (
                     <Row>
-                      {this.state.artist && (
-                        <div className="album-header">
-                          <Col xs>
-                            <h1>{this.state.docTitle}</h1>
-                          </Col>
-                        </div>
-                      )}
-                    </Row>
-                    <Row>
-                      <Col md={6}>
-                        <AlbumInfo info={this.state.album} />
+                      <Col xs={1} s={2} md={2} lg={3} />
+                      <Col xs={10} s={8} md={8} lg={6}>
+                        <Loading {...this.state} />
                       </Col>
-                      <Col md={{ span: 5, offset: 1 }}>
-                        <Song
-                          songChangeHandler={this.songChangeHandler}
-                          artistTracks={this.state.tracks}
-                        />
-                      </Col>
+                      <Col xs={1} s={2} md={2} lg={3} />
                     </Row>
-                  </React.Fragment>
-                )}
-              </React.Fragment>
-            )}
-          </div>
-        )}
-      </Container>
+                  ) : (
+                    <React.Fragment>
+                      <Row>
+                        {this.state.artist && (
+                          <div className="album-header">
+                            <Col xs>
+                              <h1>{this.state.docTitle}</h1>
+                            </Col>
+                          </div>
+                        )}
+                      </Row>
+                      <Row>
+                        <Col md={6}>
+                          <AlbumInfo info={this.state.album} />
+                        </Col>
+                        <Col md={{ span: 5, offset: 1 }}>
+                          <Song
+                            songChangeHandler={this.songChangeHandler}
+                            artistTracks={this.state.tracks}
+                          />
+                        </Col>
+                      </Row>
+                    </React.Fragment>
+                  )}
+                </React.Fragment>
+              )}
+            </div>
+          )}
+        </Container>
+        <Footer />
+      </React.Fragment>
     );
   }
 }

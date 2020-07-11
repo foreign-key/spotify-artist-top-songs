@@ -1,0 +1,46 @@
+.footer {
+  height: 40px;
+  width: 100vw;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  box-shadow: 0 4px 8px 0 rgba(222, 199, 23, 0.2),
+    0 6px 20px 0 rgba(222, 199, 23, 0.19);
+  /* background: -webkit-linear-gradient(to bottom, #202120, #000904);
+  background: linear-gradient(to bottom, #202120, #000904); */
+  background-color: #000904;
+  font-size: 14px;
+  color: #c6b739;
+  flex-shrink: 0;
+  float: none;
+  clear: both;
+  z-index: 1000 !important;
+}
+
+.footer h6 {
+  text-align: left;
+  font-size: 14px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+.social-container {
+  right: 0;
+  position: fixed;
+  margin-top: -28px;
+  position: absolute;
+  margin-right: 20px;
+}
+a.social {
+  margin: 0 0.25rem;
+  transition: transform 250ms;
+  display: inline-block;
+}
+a.social:hover {
+  transform: translateY(-2px);
+}
+a.github {
+  color: #979a9a;
+}
+a.linkedin {
+  color: #0e76a8;
+}
