@@ -20,7 +20,7 @@ class SearchInput extends Component {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Enter Artist"
+                  placeholder="Search for Artists"
                   ref={(search) => (this._inputElement = search)}
                 />
               </div>

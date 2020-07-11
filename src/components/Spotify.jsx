@@ -128,9 +128,7 @@ class Spotify extends Component {
     if (filteredItems.length > 0) {
       artistName = filteredItems[0].name;
       artistId = filteredItems[0].id;
-    }
-
-    if (items.length > 0) {
+    } else if (items.length > 0) {
       artistName = items[0].name;
       artistId = items[0].id;
     }
@@ -177,15 +175,15 @@ class Spotify extends Component {
               <Col />
             </Row>
             {this.state.tracks && (
-              <Row>
+              <React.Fragment>
                 {this.state.requesting ? (
-                  <React.Fragment>
+                  <Row>
                     <Col xs={1} s={2} md={2} lg={3} />
                     <Col xs={10} s={8} md={8} lg={6}>
                       <Loading {...this.state} />
                     </Col>
                     <Col xs={1} s={2} md={2} lg={3} />
-                  </React.Fragment>
+                  </Row>
                 ) : (
                   <React.Fragment>
                     <Row>
@@ -210,7 +208,7 @@ class Spotify extends Component {
                     </Row>
                   </React.Fragment>
                 )}
-              </Row>
+              </React.Fragment>
             )}
           </div>
         )}
