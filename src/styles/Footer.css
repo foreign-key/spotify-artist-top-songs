@@ -4,13 +4,11 @@
   right: 0;
   bottom: 0;
   position: fixed;
-  box-shadow: 0 4px 8px 0 rgba(222, 199, 23, 0.2),
-    0 6px 20px 0 rgba(222, 199, 23, 0.19);
-  /* background: -webkit-linear-gradient(to bottom, #202120, #000904);
-  background: linear-gradient(to bottom, #202120, #000904); */
+  box-shadow: 0 4px 8px 0 rgba(245, 240, 210, 0.2),
+    0 6px 20px 0 rgba(245, 240, 210, 0.19);
   background-color: #000904;
   font-size: 14px;
-  color: #c6b739;
+  color: #96800e;
   flex-shrink: 0;
   float: none;
   clear: both;

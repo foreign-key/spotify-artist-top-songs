@@ -9,8 +9,12 @@ import Song from "./Song";
 import AlbumInfo from "./AlbumInfo";
 import Loading from "./Loading";
 import Footer from "./Footer";
+import runtimeEnv from "@mars/heroku-js-runtime-env";
 
-import "../styles/index.css";
+import "../styles/Footer.css";
+
+const env = runtimeEnv();
+let LastSelectedSong = null;
 
 class Spotify extends Component {
   constructor(props, context) {
@@ -31,47 +35,60 @@ class Spotify extends Component {
     this.songChangeHandler = this.songChangeHandler.bind(this);
   }
 
+  processRequest = (requestUrl, done) => {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", requestUrl, true);
+    xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
+    this.setState({
+      requesting: true,
+    });
+
+    xhr.onload = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          done(null, JSON.parse(xhr.responseText));
+        }
+      }
+    };
+
+    xhr.onerror = () => {
+      done(xhr.response);
+    };
+
+    xhr.send();
+  };
+
   searchHandler = (event, inputElement) => {
     const searchArtist = inputElement.value;
 
     if (searchArtist !== "") {
-      var xhr = new XMLHttpRequest();
-      xhr.open(
-        "GET",
+      this.processRequest(
         `https://api.spotify.com/v1/search?q=${inputElement.value}&type=artist`,
-        true
-      );
-      xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
-      this.setState({
-        requesting: true,
-      });
-
-      xhr.onload = function (e) {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            var response = JSON.parse(xhr.responseText);
-            if (response.artists.items.length > 0) {
-              this.getArtistName(searchArtist, response.artists.items);
-              this.searchAlbums();
-            }
-          } else {
+        (err, response) => {
+          if (err) {
             this.setState({
-              errorMessage: xhr.statusText,
+              errorMessage: err,
               requesting: false,
               done: true,
             });
-            console.error(xhr.statusText);
+          }
+
+          if (response.artists.items.length > 0) {
+            this.getArtistName(searchArtist, response.artists.items);
+            this.searchAlbums();
+          } else {
+            this.setState({
+              artist: "",
+              artistId: "",
+              album: "",
+              tracks: [],
+              requesting: false,
+              done: true,
+            });
+            document.title = env.REACT_APP_NAME;
           }
         }
-      }.bind(this);
-      xhr.onerror = function (e) {
-        console.error(xhr.statusText);
-      };
-      xhr.send(null);
-      this.setState({
-        requesting: false,
-        done: true,
-      });
+      );
     }
 
     inputElement.focus();
@@ -81,41 +98,25 @@ class Spotify extends Component {
 
   searchAlbums = () => {
     if (this.state.artistId !== "") {
-      var xhr = new XMLHttpRequest();
-      xhr.open(
-        "GET",
+      this.processRequest(
         `https://api.spotify.com/v1/artists/${this.state.artistId}/top-tracks?country=US`,
-        true
-      );
-      xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
-      this.setState({
-        requesting: true,
-      });
-
-      xhr.onload = function (e) {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            var response = JSON.parse(xhr.responseText);
+        (err, response) => {
+          if (err) {
             this.setState({
-              tracks: response.tracks,
-              album: response.tracks[0],
-              done: true,
-              requesting: false,
-            });
-          } else {
-            this.setState({
-              errorMessage: xhr.statusText,
+              errorMessage: err,
               requesting: false,
               done: true,
             });
-            console.error(xhr.statusText);
           }
+
+          this.setState({
+            tracks: response.tracks,
+            album: response.tracks[0],
+            done: true,
+            requesting: false,
+          });
         }
-      }.bind(this);
-      xhr.onerror = function (e) {
-        console.error(xhr.statusText);
-      };
-      xhr.send(null);
+      );
     }
   };
 
@@ -144,7 +145,13 @@ class Spotify extends Component {
     document.title = `${this.state.docTitle} | Spotify`;
   };
 
-  songChangeHandler = (cardElement, album) => {
+  songChangeHandler = (album, event) => {
+    if (LastSelectedSong) {
+      LastSelectedSong.className = "card";
+    }
+
+    LastSelectedSong = event.target.parentElement;
+    event.target.parentElement.className = "card-selected";
     this.setState({ album: album });
   };
 

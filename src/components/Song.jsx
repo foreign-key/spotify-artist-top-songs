@@ -14,10 +14,7 @@ class Song extends Component {
             return (
               <Card
                 key={index}
-                onClick={(event) =>
-                  this.props.songChangeHandler(this._cardElement, info)
-                }
-                ref={(card) => (this._cardElement = card)}
+                onClick={(event) => this.props.songChangeHandler(info, event)}
                 body
               >
                 {index + 1} | {info.name}
