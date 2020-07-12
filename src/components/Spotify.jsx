@@ -147,11 +147,11 @@ class Spotify extends Component {
 
   songChangeHandler = (album, event) => {
     if (LastSelectedSong) {
-      LastSelectedSong.className = "card";
+      LastSelectedSong.classList.remove("active");
     }
 
-    LastSelectedSong = event.target.parentElement;
-    event.target.parentElement.className = "card-selected";
+    LastSelectedSong = event.target;
+    event.target.classList.add("active");
     this.setState({ album: album });
   };
 

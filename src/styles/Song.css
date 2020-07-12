@@ -1,21 +1,12 @@
-.card {
+button,
+.btn-outline-warning {
+  text-align: left;
+  width: 100%;
+  height: 50px;
   border-radius: 10px;
   opacity: 0.7;
   background-color: transparent;
   background-color: rgba(254, 249, 231, 0.3);
-  color: #eee469;
-  font-size: medium;
-  margin-bottom: 10px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-.card:hover,
-.card:active,
-.card-selected {
-  cursor: pointer;
-  border-color: #f9f9b0;
-  background-color: rgba(254, 249, 231, 0.8);
-  color: black;
-  border-radius: 10px;
   margin-bottom: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

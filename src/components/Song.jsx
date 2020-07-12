@@ -1,9 +1,18 @@
 import React, { Component } from "react";
-import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
 
 import "../styles/Song.css";
 
 class Song extends Component {
+  constructor(props) {
+    super(props);
+    this.songRefs = [];
+  }
+
+  componentDidMount() {
+    this.songRefs[0] && this.songRefs[0].click();
+  }
+
   render() {
     let songs = null;
 
@@ -12,13 +21,15 @@ class Song extends Component {
         <React.Fragment>
           {this.props.artistTracks.map((info, index) => {
             return (
-              <Card
+              <Button
                 key={index}
+                variant="outline-warning"
+                className="text-left"
                 onClick={(event) => this.props.songChangeHandler(info, event)}
-                body
+                ref={(ref) => (this.songRefs[index] = ref)}
               >
                 {index + 1} | {info.name}
-              </Card>
+              </Button>
             );
           })}
         </React.Fragment>
