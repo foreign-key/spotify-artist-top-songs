@@ -170,22 +170,21 @@ class Spotify extends Component {
     this.setState({ isPopAlert: false });
   };
 
-  removeAccents = (str) => {
-    alert(str);
-    var accents =
-      "ÀÁÂÃÄÅàáâãäåßÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
-    var accentsOut =
-      "AAAAAAaaaaaaBOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
-    str = str.split("");
-    var strLen = str.length;
-    var i, x;
-    for (i = 0; i < strLen; i++) {
-      if ((x = accents.indexOf(str[i])) !== -1) {
-        str[i] = accentsOut[x];
-      }
-    }
-    alert(str.join(""));
-    return str.join("");
+  removeAccents = (string) => {
+    return string
+      .split("")
+      .map(
+        function (letter) {
+          let i = this.accents.indexOf(letter);
+          return i !== -1 ? this.out[i] : letter;
+        }.bind({
+          accents:
+            "ÀÁÂÃÄÅĄàáâãäåąßÒÓÔÕÕÖØÓòóôõöøóÈÉÊËĘèéêëęðÇĆçćÐÌÍÎÏìíîïÙÚÛÜùúûüÑŃñńŠŚšśŸÿýŽŻŹžżź",
+          out:
+            "AAAAAAAaaaaaaaBOOOOOOOOoooooooEEEEEeeeeeeCCccDIIIIiiiiUUUUuuuuNNnnSSssYyyZZZzzz",
+        })
+      )
+      .join("");
   };
 
   render() {
