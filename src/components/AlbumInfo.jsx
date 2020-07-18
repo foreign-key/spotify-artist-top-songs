@@ -23,7 +23,9 @@ class AlbumInfo extends Component {
                 <h4>{this.props.info.album.name}</h4>
                 <h5>
                   {this.props.info.album.artists[0].name} |{" "}
-                  {this.props.info.album.release_date}
+                  {new Date(
+                    this.props.info.album.release_date
+                  ).toLocaleDateString()}
                 </h5>
               </div>
             </Col>
