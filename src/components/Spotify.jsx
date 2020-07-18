@@ -3,12 +3,13 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
+import AlbumInfo from "./AlbumInfo";
 import Authorise from "./Authorise";
+import Footer from "./Footer";
+import Loading from "./Loading";
+import Message from "./Message";
 import SearchInput from "./SearchInput";
 import Song from "./Song";
-import AlbumInfo from "./AlbumInfo";
-import Loading from "./Loading";
-import Footer from "./Footer";
 import runtimeEnv from "@mars/heroku-js-runtime-env";
 
 import "../styles/Footer.css";
@@ -21,14 +22,16 @@ class Spotify extends Component {
     super(props, context);
 
     this.state = {
+      album: "",
       artist: "",
       artistId: "",
+      docTitle: "",
+      done: false,
+      errorMessage: "",
+      isPopAlert: false,
+      requesting: false,
       token: "",
       tracks: [],
-      album: "",
-      requesting: false,
-      done: false,
-      docTitle: "",
     };
 
     this.searchHandler = this.searchHandler.bind(this);
@@ -37,29 +40,32 @@ class Spotify extends Component {
 
   processRequest = (requestUrl, done) => {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", requestUrl, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
-    this.setState({
-      requesting: true,
-    });
+    this.setState({ requesting: true });
+    setTimeout(() => {
+      xhr.open("GET", requestUrl, true);
+      xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
+      this.setState({
+        requesting: true,
+      });
 
-    xhr.onload = () => {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          done(null, JSON.parse(xhr.responseText));
+      xhr.onload = () => {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            done(null, JSON.parse(xhr.responseText));
+          }
         }
-      }
-    };
+      };
 
-    xhr.onerror = () => {
-      done(xhr.response);
-    };
+      xhr.onerror = () => {
+        done(xhr.response);
+      };
 
-    xhr.send();
+      xhr.send();
+    }, 1200);
   };
 
   searchHandler = (event, inputElement) => {
-    const searchArtist = inputElement.value;
+    const searchArtist = inputElement.value.trim();
 
     if (searchArtist !== "") {
       this.processRequest(
@@ -78,12 +84,15 @@ class Spotify extends Component {
             this.searchAlbums();
           } else {
             this.setState({
-              artist: "",
-              artistId: "",
               album: "",
-              tracks: [],
-              requesting: false,
+              artist: searchArtist,
+              artistId: "",
+              docTitle: "",
               done: true,
+              errorMessage: "Not Found",
+              isPopAlert: true,
+              requesting: false,
+              tracks: [],
             });
             document.title = env.REACT_APP_NAME;
           }
@@ -122,7 +131,7 @@ class Spotify extends Component {
 
   getArtistName = (searchArtist, items) => {
     const filteredItems = items.filter(
-      (x) => x.name.toLowerCase() === searchArtist
+      (x) => x.name.toLowerCase() === searchArtist && x.images.length > 0
     );
 
     let artistName = "",
@@ -157,6 +166,10 @@ class Spotify extends Component {
 
   onTokenGenerated = (token) => {
     this.setState({ token: token });
+  };
+
+  toggleModal = () => {
+    this.setState({ isPopAlert: false });
   };
 
   render() {
@@ -197,6 +210,14 @@ class Spotify extends Component {
                     </Row>
                   ) : (
                     <React.Fragment>
+                      {this.state.isPopAlert && (
+                        <Message
+                          searchParameter={this.state.artist}
+                          errorMessage={this.state.errorMessage}
+                          isPopAlert={this.state.isPopAlert}
+                          toggleModal={this.toggleModal}
+                        />
+                      )}
                       <Row>
                         {this.state.artist && (
                           <div className="album-header">

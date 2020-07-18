@@ -1,13 +1,13 @@
 import React from "react";
 import FadeIn from "react-fade-in";
 import Lottie from "react-lottie";
-import * as WaterLoading from "../loading.json";
+import * as SoundWaves from "../soundWaves.json";
 import * as SuccessRequest from "../success.json";
 
 const defaultOptions = {
   loop: true,
   autoplay: true,
-  animationData: WaterLoading.default,
+  animationData: SoundWaves.default,
   rendererSettings: {
     preserveAspectRatio: "xMidYMid slice",
   },

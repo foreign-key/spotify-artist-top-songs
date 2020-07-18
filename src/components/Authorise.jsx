@@ -51,6 +51,7 @@ class Authorise extends Component {
         <Container fluid>
           {!this.state.token && (
             <Button
+              className="btn-authorise"
               size="lg"
               block
               href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
