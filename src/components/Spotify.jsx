@@ -65,7 +65,7 @@ class Spotify extends Component {
   };
 
   searchHandler = (event, inputElement) => {
-    const searchArtist = inputElement.value.trim();
+    const searchArtist = inputElement.value.trim().toLowerCase();
 
     if (searchArtist !== "") {
       this.processRequest(
@@ -171,17 +171,20 @@ class Spotify extends Component {
   };
 
   removeAccents = (str) => {
+    alert(str);
     var accents =
       "ÀÁÂÃÄÅàáâãäåßÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
     var accentsOut =
       "AAAAAAaaaaaaBOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
     str = str.split("");
-    str.forEach((letter, index) => {
-      let i = accents.indexOf(letter);
-      if (i != -1) {
-        str[index] = accentsOut[i];
+    var strLen = str.length;
+    var i, x;
+    for (i = 0; i < strLen; i++) {
+      if ((x = accents.indexOf(str[i])) !== -1) {
+        str[i] = accentsOut[x];
       }
-    });
+    }
+    alert(str.join(""));
     return str.join("");
   };
 
