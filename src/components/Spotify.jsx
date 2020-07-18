@@ -135,10 +135,12 @@ class Spotify extends Component {
   };
 
   getArtistName = (searchArtist, items) => {
+    const unorm = require("unorm");
+
     const filteredItems = items.filter(
       (x) =>
-        x.name
-          .normalize("NFD")
+        unorm
+          .nfkd(x.name)
           .replace(/[\u0300-\u036f]/g, "")
           .toLowerCase() === searchArtist && x.images.length > 0
     );
