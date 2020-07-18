@@ -61,7 +61,7 @@ class Spotify extends Component {
       };
 
       xhr.send();
-    }, 1200);
+    }, 700);
   };
 
   searchHandler = (event, inputElement) => {
@@ -83,18 +83,7 @@ class Spotify extends Component {
             this.getArtistName(searchArtist, response.artists.items);
             this.searchAlbums();
           } else {
-            this.setState({
-              album: "",
-              artist: searchArtist,
-              artistId: "",
-              docTitle: "",
-              done: true,
-              errorMessage: "Not Found",
-              isPopAlert: true,
-              requesting: false,
-              tracks: [],
-            });
-            document.title = env.REACT_APP_NAME;
+            this.invalidSearch(searchArtist);
           }
         }
       );
@@ -112,46 +101,57 @@ class Spotify extends Component {
         (err, response) => {
           if (err) {
             this.setState({
+              done: true,
               errorMessage: err,
               requesting: false,
-              done: true,
             });
           }
 
           this.setState({
-            tracks: response.tracks,
             album: response.tracks[0],
             done: true,
             requesting: false,
+            tracks: response.tracks,
           });
+          document.title = `${this.state.docTitle} | Spotify`;
         }
       );
     }
   };
 
+  invalidSearch = (searchArtist) => {
+    this.setState({
+      album: "",
+      artist: searchArtist,
+      artistId: "",
+      docTitle: "",
+      done: true,
+      errorMessage: "Not Found",
+      isPopAlert: true,
+      requesting: false,
+      tracks: [],
+    });
+    document.title = env.REACT_APP_NAME;
+  };
+
   getArtistName = (searchArtist, items) => {
     const filteredItems = items.filter(
-      (x) => x.name.toLowerCase() === searchArtist && x.images.length > 0
+      (x) =>
+        x.name
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase() === searchArtist && x.images.length > 0
     );
 
-    let artistName = "",
-      artistId = "";
-
     if (filteredItems.length > 0) {
-      artistName = filteredItems[0].name;
-      artistId = filteredItems[0].id;
-    } else if (items.length > 0) {
-      artistName = items[0].name;
-      artistId = items[0].id;
+      this.setState({
+        artist: filteredItems[0].name,
+        artistId: filteredItems[0].id,
+        docTitle: `Top 10 Tracks of ${filteredItems[0].name}`,
+      });
+    } else {
+      this.invalidSearch(searchArtist);
     }
-
-    this.setState({
-      artist: artistName,
-      artistId: artistId,
-      docTitle: `Top 10 Tracks of ${artistName}`,
-    });
-
-    document.title = `${this.state.docTitle} | Spotify`;
   };
 
   songChangeHandler = (album, event) => {
