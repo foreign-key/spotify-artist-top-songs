@@ -135,11 +135,9 @@ class Spotify extends Component {
   };
 
   getArtistName = (searchArtist, items) => {
-    const removeDiacritics = require("diacritics").remove;
-
     const filteredItems = items.filter(
       (x) =>
-        removeDiacritics(x.name).toLowerCase() === searchArtist &&
+        this.removeAccents(x.name).toLowerCase() === searchArtist &&
         x.images.length > 0
     );
 
@@ -170,6 +168,21 @@ class Spotify extends Component {
 
   toggleModal = () => {
     this.setState({ isPopAlert: false });
+  };
+
+  removeAccents = (str) => {
+    var accents =
+      "ÀÁÂÃÄÅàáâãäåßÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
+    var accentsOut =
+      "AAAAAAaaaaaaBOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
+    str = str.split("");
+    str.forEach((letter, index) => {
+      let i = accents.indexOf(letter);
+      if (i != -1) {
+        str[index] = accentsOut[i];
+      }
+    });
+    return str.join("");
   };
 
   render() {
