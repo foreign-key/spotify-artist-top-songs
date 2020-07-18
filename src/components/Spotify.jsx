@@ -135,14 +135,12 @@ class Spotify extends Component {
   };
 
   getArtistName = (searchArtist, items) => {
-    const unorm = require("unorm");
+    const removeDiacritics = require("diacritics").remove;
 
     const filteredItems = items.filter(
       (x) =>
-        unorm
-          .nfkd(x.name)
-          .replace(/[\u0300-\u036f]/g, "")
-          .toLowerCase() === searchArtist && x.images.length > 0
+        removeDiacritics(x.name).toLowerCase() === searchArtist &&
+        x.images.length > 0
     );
 
     if (filteredItems.length > 0) {
