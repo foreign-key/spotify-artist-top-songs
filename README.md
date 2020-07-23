@@ -9,7 +9,9 @@ A simple app created using React.JS that lists the top songs from a particular a
 1. Navigate to [repo](https://github.com/foreign-key/spotify-artist-top-songs)
 2. Clone locally using
    `$ git clone https://github.com/foreign-key/spotify-artist-top-songs.git` or download ZIP file
-3. Enjoy!
+3. `npm install`
+4. `npm start`
+5. Enjoy!
 
 ## Notes
 
