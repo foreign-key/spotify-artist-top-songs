@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
-import Cookies from "universal-cookie";
 
 import runtimeEnv from "@mars/heroku-js-runtime-env";
 
 const env = runtimeEnv();
-const cookies = new Cookies();
 
 const hash = window.location.hash
   .substring(1)
@@ -27,9 +25,8 @@ class Authorise extends Component {
   }
 
   componentDidMount() {
-    const cookieExpiry = cookies.get("expires");
-    const access_token = cookies.get("access_token");
-    // const access_token = this.getCookie("access_token");
+    const access_token = this.getCookie("access_token");
+    const cookieExpiry = this.getCookie("expires");
 
     if (access_token === "") {
       this.setState({ isSessionValid: false });
@@ -48,8 +45,7 @@ class Authorise extends Component {
       this.setCookie(
         "access_token",
         hash.access_token,
-        new Date(new Date().setSeconds(hash.expires_in)),
-        hash.expires_in
+        new Date(new Date().setSeconds(hash.expires_in))
       );
     }
   }
@@ -61,19 +57,15 @@ class Authorise extends Component {
     }, "");
   };
 
-  setCookie(name, value, expires, maxAge) {
-    // document.cookie = name + "=" + value + "; expires=" + expires + " path=/;";
-    cookies.set(name, value, { path: "/", expires: expires, maxAge: maxAge });
+  setCookie(name, value, expires) {
+    this.deleteCookie(name);
+    document.cookie = `${name}=${value}; `;
+    document.cookie = `expires=${expires.toUTCString()};`;
   }
 
   deleteCookie = (name) => {
-    // document.cookie =
-    //   name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
-    cookies.remove(name, {
-      path: "/",
-      expires: "Thu, 01 Jan 1970 00:00:01 GMT",
-      maxAge: 0,
-    });
+    document.cookie = `${name}=;`;
+    document.cookie = `expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
   };
 
   render() {
