@@ -121,7 +121,7 @@ class Spotify extends Component {
       this.setState({
         artist: filteredItems[0].name,
         artistId: filteredItems[0].id,
-        docTitle: `Top 10 Tracks of ${filteredItems[0].name}`,
+        docTitle: `Popular Tracks of ${filteredItems[0].name}`,
       });
     } else {
       this.invalidSearch(searchArtist);
