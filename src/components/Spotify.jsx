@@ -10,6 +10,8 @@ import Loading from "./Loading";
 import Message from "./Message";
 import SearchInput from "./SearchInput";
 import Song from "./Song";
+import { removeAccents } from "../helpers/Helpers";
+import { queryArtist, queryTracks } from "../helpers/RequestHandlers";
 import runtimeEnv from "@mars/heroku-js-runtime-env";
 
 import "../styles/Footer.css";
@@ -28,9 +30,9 @@ class Spotify extends Component {
       docTitle: "",
       done: false,
       errorMessage: "",
+      isAuthorised: false,
       isPopAlert: false,
       requesting: false,
-      token: "",
       tracks: [],
     };
 
@@ -38,55 +40,29 @@ class Spotify extends Component {
     this.songChangeHandler = this.songChangeHandler.bind(this);
   }
 
-  processRequest = (requestUrl, done) => {
-    var xhr = new XMLHttpRequest();
-    this.setState({ requesting: true });
-    setTimeout(() => {
-      xhr.open("GET", requestUrl, true);
-      xhr.setRequestHeader("Authorization", "Bearer " + this.state.token);
-      this.setState({
-        requesting: true,
-      });
-
-      xhr.onload = () => {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            done(null, JSON.parse(xhr.responseText));
-          }
-        }
-      };
-
-      xhr.onerror = () => {
-        done(xhr.response);
-      };
-
-      xhr.send();
-    }, 700);
-  };
-
   searchHandler = (event, inputElement) => {
     const searchArtist = inputElement.value.trim().toLowerCase();
 
     if (searchArtist !== "") {
-      this.processRequest(
-        `https://api.spotify.com/v1/search?q=${inputElement.value}&type=artist`,
-        (err, response) => {
-          if (err) {
+      this.setState({ requesting: true });
+      setTimeout(() => {
+        queryArtist(searchArtist)
+          .then((data) => {
+            if (data.artists.items.length > 0) {
+              this.getArtistName(searchArtist, data.artists.items);
+              this.searchAlbums();
+            } else {
+              this.invalidSearch(searchArtist);
+            }
+          })
+          .catch((err) => {
             this.setState({
-              errorMessage: err,
+              errorMessage: err.statusText,
               requesting: false,
               done: true,
             });
-          }
-
-          if (response.artists.items.length > 0) {
-            this.getArtistName(searchArtist, response.artists.items);
-            this.searchAlbums();
-          } else {
-            this.invalidSearch(searchArtist);
-          }
-        }
-      );
+          });
+      }, 500);
     }
 
     inputElement.focus();
@@ -96,26 +72,26 @@ class Spotify extends Component {
 
   searchAlbums = () => {
     if (this.state.artistId !== "") {
-      this.processRequest(
-        `https://api.spotify.com/v1/artists/${this.state.artistId}/top-tracks?country=US`,
-        (err, response) => {
-          if (err) {
+      this.setState({ requesting: true });
+      setTimeout(() => {
+        queryTracks(this.state.artistId)
+          .then((data) => {
             this.setState({
+              album: data.tracks[0],
               done: true,
-              errorMessage: err,
               requesting: false,
+              tracks: data.tracks,
             });
-          }
-
-          this.setState({
-            album: response.tracks[0],
-            done: true,
-            requesting: false,
-            tracks: response.tracks,
+            document.title = `${this.state.docTitle} | Spotify`;
+          })
+          .catch((err) => {
+            this.setState({
+              errorMessage: err.statusText,
+              requesting: false,
+              done: true,
+            });
           });
-          document.title = `${this.state.docTitle} | Spotify`;
-        }
-      );
+      }, 500);
     }
   };
 
@@ -137,7 +113,7 @@ class Spotify extends Component {
   getArtistName = (searchArtist, items) => {
     const filteredItems = items.filter(
       (x) =>
-        this.removeAccents(x.name).toLowerCase() === searchArtist &&
+        removeAccents(x.name).toLowerCase() === searchArtist &&
         x.images.length > 0
     );
 
@@ -162,30 +138,12 @@ class Spotify extends Component {
     this.setState({ album: album });
   };
 
-  onTokenGenerated = (token) => {
-    this.setState({ token: token });
-  };
-
   toggleModal = () => {
     this.setState({ isPopAlert: false });
   };
 
-  removeAccents = (string) => {
-    return string
-      .split("")
-      .map(
-        function (letter) {
-          let i = this.accents.indexOf(letter);
-          return i !== -1 ? this.out[i] : letter;
-        }.bind({
-          accents:
-            "ÀÁÂÃÄÅĄàáâãäåąßÒÓÔÕÕÖØÓòóôõöøóÈÉÊËĘèéêëęðÇĆçćÐÌÍÎÏìíîïÙÚÛÜùúûüÑŃñńŠŚšśŸÿýŽŻŹžżź",
-          out:
-            "AAAAAAAaaaaaaaBOOOOOOOOoooooooEEEEEeeeeeeCCccDIIIIiiiiUUUUuuuuNNnnSSssYyyZZZzzz",
-        })
-      )
-      .join("");
-  };
+  onAccountAuthorised = (isAuthorised) =>
+    this.setState({ isAuthorised: isAuthorised });
 
   render() {
     return (
@@ -194,12 +152,12 @@ class Spotify extends Component {
           <Row>
             <Col xs={1} s={2} md={3} lg={4} />
             <Col xs={10} s={8} md={6} lg={4}>
-              <Authorise onTokenGenerated={this.onTokenGenerated} />
+              <Authorise onAccountAuthorised={this.onAccountAuthorised} />
             </Col>
             <Col xs={1} s={2} md={3} lg={4} />
           </Row>
 
-          {this.state.token && (
+          {this.state.isAuthorised && (
             <div className="albumMain">
               <Row>
                 <Col />
