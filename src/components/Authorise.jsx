@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 
-import runtimeEnv from "@mars/heroku-js-runtime-env";
-
-const env = runtimeEnv();
-
 const hash = window.location.hash
   .substring(1)
   .split("&")
@@ -77,7 +73,7 @@ class Authorise extends Component {
               className="btn-authorise"
               size="lg"
               block
-              href={`https://accounts.spotify.com/authorize?client_id=${env.REACT_APP_CLIENTID}&redirect_uri=${env.REACT_APP_REDIRECT_URI}&response_type=token&show_dialog=true`}
+              href={`https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENTID}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=token&show_dialog=true`}
             >
               Login to Spotify
             </Button>

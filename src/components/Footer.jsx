@@ -4,11 +4,16 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLinkedin, faGithub } from "@fortawesome/free-brands-svg-icons";
-import runtimeEnv from "@mars/heroku-js-runtime-env";
 
 import "../styles/Footer.css";
 
-const env = runtimeEnv();
+const FooterIcon = (props) => {
+  return (
+    <a href={props.link} className={`${props.classname} social`}>
+      <FontAwesomeIcon icon={props.faicon} size="2x" />
+    </a>
+  );
+};
 
 class Footer extends Component {
   render() {
@@ -17,18 +22,19 @@ class Footer extends Component {
         <Container>
           <Row>
             <Col xs={12} md={12} lg={12} xl={12}>
-              <h6>{env.REACT_APP_NAME} © 2020</h6>
+              <h6>{process.env.REACT_APP_NAME} © 2020</h6>
 
               <div className="social-container">
-                <a href={env.REACT_APP_FOOTER_GITHUB} className="github social">
-                  <FontAwesomeIcon icon={faGithub} size="2x" />
-                </a>
-                <a
-                  href={env.REACT_APP_FOOTER_LINKEDIN}
-                  className="linkedin social"
-                >
-                  <FontAwesomeIcon icon={faLinkedin} size="2x" />
-                </a>
+                <FooterIcon
+                  link={process.env.REACT_APP_FOOTER_GITHUB}
+                  classname="github"
+                  faicon={faGithub}
+                />
+                <FooterIcon
+                  link={process.env.REACT_APP_FOOTER_LINKEDIN}
+                  classname="linkedin"
+                  faicon={faLinkedin}
+                />
               </div>
             </Col>
           </Row>

@@ -12,11 +12,8 @@ import SearchInput from "./SearchInput";
 import Song from "./Song";
 import { removeAccents } from "../helpers/Helpers";
 import { queryArtist, queryTracks } from "../helpers/RequestHandlers";
-import runtimeEnv from "@mars/heroku-js-runtime-env";
 
 import "../styles/Footer.css";
-
-const env = runtimeEnv();
 let LastSelectedSong = null;
 
 class Spotify extends Component {
@@ -107,7 +104,7 @@ class Spotify extends Component {
       requesting: false,
       tracks: [],
     });
-    document.title = env.REACT_APP_NAME;
+    document.title = process.env.REACT_APP_NAME;
   };
 
   getArtistName = (searchArtist, items) => {
