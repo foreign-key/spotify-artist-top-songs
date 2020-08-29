@@ -1,5 +1,5 @@
 # Artist's Popular Tracks | Spotify
-A simple app created using React.JS that lists the popular songs from a particular artist. The app displays the album cover and some info upon clicking on the song(card). This utilizes Spotify's APIs to search for artist ID, albums, and songs.
+A simple app created using React.js and OAuth to get access to Spotify that lists the popular songs from a particular artist. The app displays the album cover and some info upon clicking on the song (card). This utilizes Spotify's APIs to search for artist ID, albums, and songs.
 
 ## Live Demo
 [Artist's Popular Tracks | Spotify](https://top10tracks.netlify.app/) on Netlify
